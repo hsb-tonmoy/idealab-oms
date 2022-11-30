@@ -11,10 +11,30 @@ datasource db {
 }
 
 model User {
-  id        Int      @default(autoincrement()) @id
+  id        String     @id @unique @default(cuid())
+  provider_id     String    @unique
+  hashed_password String?
   email     String   @unique
   name      String?
+  profilePicture String?
+  isAdmin   Boolean  @default(false)
+  isSuperAdmin Boolean @default(false)
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  session         Session[]
   orders    Order[]
+
+ @@map("user")
+
+}
+model Session {
+  id           String @id @unique
+  user_id      String
+  expires      BigInt
+  idle_expires BigInt
+  user         User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  @@index([user_id])
+  @@map("session")
 }
 
 model Patron {
@@ -35,7 +55,7 @@ model Order {
   patron  Patron @relation(fields: [patronId], references: [id])
   patronId Int
   user       User    @relation(fields: [userId], references: [id])
-  userId     Int
+  userId     String
   files    File[]
   status   String
   patronContacted Boolean
