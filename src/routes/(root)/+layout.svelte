@@ -4,6 +4,7 @@
 
 	import Menu from '$lib/components/layout/Menu.svelte';
 	import { invalidateAll } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	export let isSideMenuOpen = false;
 	export let isProfileMenuOpen = false;
@@ -14,6 +15,33 @@
 	async function signout() {
 		await signOut();
 		invalidateAll();
+	}
+
+	let theme = '';
+
+	onMount(() => {
+		if (
+			localStorage.theme === 'dark' ||
+			(!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+		) {
+			theme = 'dark';
+			document.documentElement.classList.add('dark');
+		} else {
+			theme = 'light';
+			document.documentElement.classList.remove('dark');
+		}
+	});
+
+	function toggleTheme() {
+		if (localStorage.theme === 'dark') {
+			theme = 'light';
+			localStorage.theme = 'light';
+			document.documentElement.classList.remove('dark');
+		} else {
+			theme = 'dark';
+			localStorage.theme = 'dark';
+			document.documentElement.classList.add('dark');
+		}
 	}
 </script>
 
@@ -93,15 +121,15 @@
 					<!-- Theme toggler -->
 					<li class="flex">
 						<button
+							on:click={toggleTheme}
 							class="rounded-md focus:outline-none focus:shadow-outline-purple"
 							aria-label="Toggle color mode"
 						>
-							<template x-if="!dark">
+							{#if theme === 'light'}
 								<svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
 									<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
 								</svg>
-							</template>
-							<template x-if="dark">
+							{:else}
 								<svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
 									<path
 										fill-rule="evenodd"
@@ -109,7 +137,7 @@
 										clip-rule="evenodd"
 									/>
 								</svg>
-							</template>
+							{/if}
 						</button>
 					</li>
 
