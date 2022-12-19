@@ -93,7 +93,7 @@
 	</label>
 
 	<div class="mt-4">
-		<Button type="submit" disabled={!isValid} loading={$isSubmitting}>Login</Button>
+		<Button type="submit" disabled={!isValid} loading={$isSubmitting}>Signup</Button>
 	</div>
 
 	<p class="mt-4">

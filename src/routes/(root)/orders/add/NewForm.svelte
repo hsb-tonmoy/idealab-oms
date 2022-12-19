@@ -43,7 +43,7 @@
 			type="date"
 			label="Date Ordered"
 		/>
-		<FloatingLabelInput style="outlined" id="user" name="user" type="text" label="Staff" />
+		<FloatingLabelInput style="filled" id="user" name="user" type="text" label="Staff" disabled />
 	</section>
 	<Button type="submit">Submit</Button>
 </form>

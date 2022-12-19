@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import LoginForm from './LoginForm.svelte';
 
 	import type { ActionData } from './$types';
@@ -7,6 +7,7 @@
 	export let form: ActionData;
 
 	$: if (form?.success) {
+		invalidateAll();
 		goto('/');
 	}
 </script>
