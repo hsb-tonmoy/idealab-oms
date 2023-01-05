@@ -2,6 +2,8 @@
 	import { validator } from '@felte/validator-yup';
 	import { createForm } from 'felte';
 	import * as yup from 'yup';
+	import SvelteSelect from 'svelte-select/no-styles/Select.svelte';
+	import getPatron from './getPatron';
 
 	import { FloatingLabelInput, Helper, Label, Select } from 'flowbite-svelte';
 
@@ -63,6 +65,18 @@
 			label="Date Ordered"
 		/>
 		<FloatingLabelInput style="filled" id="user" name="user" type="text" label="Staff" disabled />
+		<div class="flex">
+			<SvelteSelect loadOptions={getPatron} itemId="id" placeholder="Select a patron">
+				<div class="patron" slot="item" let:item let:index>
+					{item.firstName}
+					{item.lastName} - {item.email}
+				</div>
+				<div class="patron" slot="selection" let:selection>
+					{selection.firstName}
+					{selection.lastName} - {selection.email}
+				</div>
+			</SvelteSelect>
+		</div>
 		<div class="col-span-2">
 			<FloatingLabelInput id="name" name="name" type="text" label="Name of the Order" />
 			{#if $errors.name}
@@ -72,3 +86,9 @@
 	</section>
 	<Button type="submit">Submit</Button>
 </form>
+
+<style lang="postcss" global>
+	.patron {
+		@apply flex items-center text-sm font-medium;
+	}
+</style>

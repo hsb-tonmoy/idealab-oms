@@ -48,6 +48,8 @@
 		"@prisma/client": "^4.6.1",
 		"felte": "^1.2.6",
 		"lucia-auth": "^0.2.0",
+		"node-fetch": "^3.3.0",
+		"svelte-select": "^5.0.2",
 		"yup": "^0.32.11",
 		"yup-password": "^0.2.2"
 	}
