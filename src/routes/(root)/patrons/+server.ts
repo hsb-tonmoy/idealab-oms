@@ -50,3 +50,21 @@ export const POST = (async ({ request }) => {
 	}
 	throw error(400, 'Patron already exists');
 }) satisfies RequestHandler;
+
+export const PATCH = (async ({ request }) => {
+	const formData = await request.json();
+	try {
+		const patron = await prisma.patron.update({
+			where: {
+				email: formData.email
+			},
+			data: formData
+		});
+		if (patron) {
+			return json({ success: true });
+		}
+	} catch (err) {
+		console.log(err);
+	}
+	throw error(400, 'Error updating patron');
+}) satisfies RequestHandler;

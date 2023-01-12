@@ -6,7 +6,7 @@
 	import * as yup from 'yup';
 
 	import Button from '$lib/components/Form/Button.svelte';
-	import { invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 
 	const leads = [
 		{ value: 'Email', name: 'Email' },
@@ -21,19 +21,23 @@
 		phone: yup.string()
 	});
 
+	export let editing = false;
+
+	export let patron = {};
+
 	const { form, data, errors, isValid, isSubmitting } = createForm({
 		initialValues: {
-			firstName: '',
-			lastName: '',
-			lead: 'Email',
-			email: '',
-			phone: ''
+			firstName: editing ? patron.firstName : '',
+			lastName: editing ? patron.lastName : '',
+			lead: editing ? patron.lead : 'Email',
+			email: editing ? patron.email || '' : '',
+			phone: editing ? patron.phone || '' : ''
 		},
 		extend: validator({ schema }),
 		onSubmit: async (values) => {
 			try {
 				const response = await fetch('/patrons', {
-					method: 'POST',
+					method: editing ? 'PATCH' : 'POST',
 					headers: {
 						'Content-Type': 'application/json'
 					},
@@ -41,6 +45,10 @@
 				});
 
 				if (response.ok) {
+					if (editing) {
+						goto('/patrons');
+						return;
+					}
 					show = false;
 					invalidateAll();
 				} else {
@@ -53,8 +61,6 @@
 	});
 
 	export let show = false;
-
-	$: console.log($data.lead);
 </script>
 
 <Modal title="Add a New Patron" bind:open={show}>

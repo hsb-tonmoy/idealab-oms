@@ -54,6 +54,9 @@ model Order {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   dateOrdered DateTime
+  name     String
+  color String
+  notes String?
   patron  Patron @relation(fields: [patronId], references: [id])
   patronId Int
   user       User    @relation(fields: [userId], references: [id])
@@ -69,12 +72,9 @@ model File {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
-  type      String
-  secret    String   @unique
-  url       String   @unique
   order     Order?   @relation(fields: [orderId], references: [id])
   orderId   Int?
   status   String
-  color  String
-  notes  String
+  color  String?
+  notes  String?
 }

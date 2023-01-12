@@ -1,20 +1,35 @@
 <script>
-	let orders = [
-		{
-			staff: 'Brian',
-			staffPosition: 'Supervisor',
-			date_ordered: '11/12/22',
-			patron: 'John Doe',
-			status: 'Printing'
-		},
-		{
-			staff: 'Tonmoy',
-			staffPosition: 'Intern',
-			date_ordered: '11/9/22',
-			patron: 'Jane Doe',
-			status: 'Finished'
+	import { convertDate } from '$lib/utils/convertDate';
+	import { goto } from '$app/navigation';
+
+	export let data;
+
+	let orders = data.orders;
+
+	function convertStatus(status) {
+		switch (status) {
+			case 'new':
+				return `<span
+										class="px-2 py-1 leading-tight text-white bg-gray-400 rounded-full dark:bg-gray-600"
+									>
+										New
+									</span>`;
+			case 'in-progress':
+				return `<span
+										class="px-2 py-1 leading-tight text-white bg-orange-400 rounded-full dark:bg-amber-600"
+									>
+										In-progress
+									</span>`;
+			case 'complete':
+				return `<span
+										class="px-2 py-1 leading-tight text-white bg-green-500 rounded-full dark:bg-green-700"
+									>
+										Complete
+									</span>`;
+			default:
+				return 'New';
 		}
-	];
+	}
 </script>
 
 <main class="h-full pb-16 overflow-y-auto">
@@ -29,42 +44,49 @@
 						<tr
 							class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
 						>
-							<th class="px-4 py-3">Staff</th>
+							<th class="px-4 py-3">Patron</th>
+							<th class="px-4 py-3">Order Name</th>
 							<th class="px-4 py-3">Date Ordered</th>
-							<th class="px-4 py-3">Patron Name</th>
+							<th class="px-4 py-3">Staff</th>
 							<th class="px-4 py-3">Date</th>
 						</tr>
 					</thead>
 					<tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
 						{#each orders as order}
-							<tr class="text-gray-700 dark:text-gray-400">
+							<tr
+								on:click={() => goto(`/orders/${order.id}`)}
+								class="text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
+							>
 								<td class="px-4 py-3">
 									<div class="flex items-center text-sm">
 										<div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
 											<img
 												class="object-cover w-full h-full rounded-full"
-												src="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+												src={`https://ui-avatars.com/api/?name=${order.patron.firstName}+${order.patron.lastName}&background=FFA26D&format=svg&rounded=true&bold=true`}
 												alt=""
 												loading="lazy"
 											/>
 											<div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true" />
 										</div>
 										<div>
-											<p class="font-semibold">{order.staff}</p>
-											<p class="text-xs text-gray-600 dark:text-gray-400">{order.staffPosition}</p>
+											<p class="font-semibold">
+												{order.patron.firstName + ' ' + order.patron.lastName}
+											</p>
 										</div>
 									</div>
 								</td>
-								<td class="px-4 py-3 text-sm"> {order.date_ordered} </td>
+								<td class="px-4 py-3 text-sm"> {order.name} </td>
 								<td class="px-4 py-3 text-xs">
-									{order.patron}
+									{convertDate(order.dateOrdered)}
+								</td>
+								<td class="px-4 py-3 text-xs">
+									<div>
+										<p class="font-semibold">{order.user.name}</p>
+										<p class="text-xs text-gray-600 dark:text-gray-400">{'Intern'}</p>
+									</div>
 								</td>
 								<td class="px-4 py-3 text-sm">
-									<span
-										class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
-									>
-										{order.status}
-									</span>
+									{@html convertStatus(order.status)}
 								</td>
 							</tr>
 						{/each}

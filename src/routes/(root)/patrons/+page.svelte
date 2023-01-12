@@ -1,11 +1,15 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { page } from '$app/stores';
+
+	const addNew = $page.url.searchParams.get('addNew');
 
 	export let data: PageData;
 
-	import NewPatron from './NewPatron.svelte';
+	import PatronForm from './PatronForm.svelte';
+	import { goto } from '$app/navigation';
 
-	let newPatronShow = false;
+	let newPatronShow = addNew ? true : false;
 </script>
 
 <main class="h-full pb-16 overflow-y-auto">
@@ -19,7 +23,7 @@
 				Add a Patron
 				<span class="ml-2" aria-hidden="true">+</span>
 			</button>
-			<NewPatron bind:show={newPatronShow} />
+			<PatronForm bind:show={newPatronShow} />
 		</div>
 
 		<div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
@@ -31,11 +35,15 @@
 						>
 							<th class="px-4 py-3">Name</th>
 							<th class="px-4 py-3">Contact</th>
+							<th class="px-4 py-3">Lead</th>
 						</tr>
 					</thead>
 					<tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
 						{#each data.patrons as patron}
-							<tr class="text-gray-700 dark:text-gray-400">
+							<tr
+								on:click={() => goto(`/patrons/${patron.id}`)}
+								class="text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
+							>
 								<td class="px-4 py-3">
 									<div class="flex items-center text-sm">
 										<div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
@@ -55,6 +63,7 @@
 									</div>
 								</td>
 								<td class="px-4 py-3 text-sm"> {patron.email || patron.phone} </td>
+								<td class="px-4 py-3 text-sm"> {patron.lead} </td>
 							</tr>
 						{/each}
 					</tbody>
