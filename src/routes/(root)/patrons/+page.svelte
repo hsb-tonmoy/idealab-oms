@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { PageData } from './$types';
 	import { page } from '$app/stores';
+	import type { PageData } from './$types';
 
 	const addNew = $page.url.searchParams.get('addNew');
 

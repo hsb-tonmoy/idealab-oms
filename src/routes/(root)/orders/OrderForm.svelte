@@ -25,7 +25,7 @@
 
 	let userID = $user?.userId;
 
-	let patron;
+	let patron = editing ? order.patron : undefined;
 
 	const statuses = [
 		{ value: 'new', name: 'New' },
@@ -56,32 +56,39 @@
 		status: yup.string().required('An order status is required')
 	});
 
-	const { form, data, errors, isValid, isSubmitting } = createForm({
+	const { form, data, errors, isValid, isSubmitting, createSubmitHandler } = createForm({
 		initialValues: {
 			name: editing ? order.name : '',
 			color: editing ? order.color : '',
 			user: editing ? order.user.name : $user?.name,
-			dateOrdered: editing ? new Date(order.dateOrdered).toLocaleString() : '',
+			dateOrdered: editing ? order.dateOrdered : '',
 			patron: editing ? order.patron.name : patron,
 			status: editing ? order.status : 'new',
 			patronContacted: editing ? order.patronContacted : false,
 			patronPickedUp: editing ? order.patronPickedUp : false,
 			files: editing ? order.files : file
 		},
-		extend: validator({ schema }),
+		extend: validator({ schema })
+	});
+
+	const manualSubmit = createSubmitHandler({
 		onSubmit: async (values) => {
 			let user = { connect: { id: userID } };
 			let patronObj = { connect: { id: patron.id } };
 			let files = {
 				create: values.files
 			};
-			values.dateOrdered = new Date(values.dateOrdered).toISOString();
 			values['user'] = user;
 			values['patron'] = patronObj;
-			values['files'] = files;
+			if (editing) {
+				values['id'] = parseInt(order.id);
+			}
+			if (!editing) {
+				values['files'] = files;
+			}
 			try {
 				const response = await fetch('/orders/add', {
-					method: 'POST',
+					method: editing ? 'PATCH' : 'POST',
 					headers: {
 						'Content-Type': 'application/json'
 					},
@@ -108,12 +115,20 @@
 		$data.files = $data.files.concat(file);
 	}
 
-	function removeFile(index) {
-		$data.files = $data.files.filter((item, i) => i !== index);
+	async function removeFile(index) {
+		if (editing) {
+			$data.files[index].delete = true;
+			await manualSubmit();
+		}
+		$data.files = $data.files.filter((_, i) => i !== index);
 	}
 </script>
 
-<form class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" use:form>
+<form
+	on:submit={manualSubmit}
+	class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
+	use:form
+>
 	<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
 		<div class="col-span-2">
 			<Label for="status" class="sr-only">Status</Label>
@@ -140,7 +155,7 @@
 				style="outlined"
 				id="dateOrdered"
 				name="dateOrdered"
-				type="datetime-local"
+				type="date"
 				label="Date Ordered"
 			/>
 			{#if $errors.dateOrdered}
@@ -154,6 +169,7 @@
 				loadOptions={getPatron}
 				itemId="id"
 				placeholder="Select a patron"
+				--list-z-index="11"
 			>
 				<div class="patron" slot="item" let:item>
 					{item.firstName}
@@ -245,6 +261,7 @@
 							on:click={() => {
 								removeFile(i);
 							}}
+							type="submit"
 							class=""><span class="block h-6 w-6 text-red-500"><Minus /></span></button
 						>
 					{/if}
@@ -252,7 +269,9 @@
 			</div>
 		{/each}
 	</section>
-	<Button loading={$isSubmitting} disabled={!isValid || $isSubmitting} type="submit">Submit</Button>
+	<Button loading={$isSubmitting} disabled={!isValid || $isSubmitting} type="submit"
+		>{editing ? 'Save Changes' : 'Submit'}</Button
+	>
 </form>
 
 <style lang="postcss" global>

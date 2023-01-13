@@ -8,6 +8,9 @@ export const load: PageServerLoad = async ({ params }) => {
 	const patron = await prisma.patron.findUnique({
 		where: {
 			id: parseInt(id)
+		},
+		include: {
+			orders: true
 		}
 	});
 

@@ -1,35 +1,11 @@
 <script>
 	import { convertDate } from '$lib/utils/convertDate';
+	import { convertStatus } from '$lib/utils/convertStatus';
 	import { goto } from '$app/navigation';
 
 	export let data;
 
 	let orders = data.orders;
-
-	function convertStatus(status) {
-		switch (status) {
-			case 'new':
-				return `<span
-										class="px-2 py-1 leading-tight text-white bg-gray-400 rounded-full dark:bg-gray-600"
-									>
-										New
-									</span>`;
-			case 'in-progress':
-				return `<span
-										class="px-2 py-1 leading-tight text-white bg-orange-400 rounded-full dark:bg-amber-600"
-									>
-										In-progress
-									</span>`;
-			case 'complete':
-				return `<span
-										class="px-2 py-1 leading-tight text-white bg-green-500 rounded-full dark:bg-green-700"
-									>
-										Complete
-									</span>`;
-			default:
-				return 'New';
-		}
-	}
 </script>
 
 <main class="h-full pb-16 overflow-y-auto">
@@ -48,7 +24,7 @@
 							<th class="px-4 py-3">Order Name</th>
 							<th class="px-4 py-3">Date Ordered</th>
 							<th class="px-4 py-3">Staff</th>
-							<th class="px-4 py-3">Date</th>
+							<th class="px-4 py-3">Status</th>
 						</tr>
 					</thead>
 					<tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
@@ -77,7 +53,7 @@
 								</td>
 								<td class="px-4 py-3 text-sm"> {order.name} </td>
 								<td class="px-4 py-3 text-xs">
-									{convertDate(order.dateOrdered)}
+									{convertDate(order.dateOrdered, true, false)}
 								</td>
 								<td class="px-4 py-3 text-xs">
 									<div>
