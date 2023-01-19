@@ -1,9 +1,7 @@
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '$lib/server/prisma';
 
 export const GET = async ({ url }) => {
 	const search = url.searchParams?.get('search');

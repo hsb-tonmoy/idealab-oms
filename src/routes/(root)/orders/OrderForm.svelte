@@ -5,15 +5,20 @@
 	import SvelteSelect from 'svelte-select';
 	import getPatron from './getPatron';
 
-	import { FloatingLabelInput, Toggle, Helper, Label, Select } from 'flowbite-svelte';
+	import { FloatingLabelInput, Toggle, Helper, Label, Select, Textarea } from 'flowbite-svelte';
 
 	import Button from '$lib/components/Form/Button.svelte';
 
-	import { Plus, Minus } from '$lib/components/Icons';
+	import { Plus, Minus, PlusCircle } from '$lib/components/Icons';
 
 	import PatronForm from '../patrons/PatronForm.svelte';
 	import { goto } from '$app/navigation';
-	import { convertDate } from '$lib/utils/convertDate';
+
+	import { notificationSuccessToast, notificationFailedToast } from '$lib/utils/notificationToast';
+
+	import { statuses, types, file_statuses, file } from '../constants';
+
+	import DeleteOrder from './DeleteOrder.svelte';
 
 	let newPatronShow = false;
 
@@ -27,27 +32,6 @@
 
 	let patron = editing ? order.patron : undefined;
 
-	const statuses = [
-		{ value: 'new', name: 'New' },
-		{ value: 'in-progress', name: 'In Progress' },
-		{ value: 'complete', name: 'Complete' }
-	];
-
-	const file_statuses = [
-		{ value: 'pending', name: 'Pending' },
-		{ value: 'printing', name: 'Printing' },
-		{ value: 'complete', name: 'Complete' }
-	];
-
-	const file = [
-		{
-			name: '',
-			status: 'pending',
-			color: '',
-			notes: ''
-		}
-	];
-
 	const schema = yup.object().shape({
 		dateOrdered: yup.string().required('An order date is required'),
 		name: yup.string().required('An order name is required.'),
@@ -56,9 +40,10 @@
 		status: yup.string().required('An order status is required')
 	});
 
-	const { form, data, errors, isValid, isSubmitting, createSubmitHandler } = createForm({
+	const { form, data, errors, isValid, isDirty, isSubmitting, createSubmitHandler } = createForm({
 		initialValues: {
 			name: editing ? order.name : '',
+			type: editing ? order.type : 'plastic',
 			color: editing ? order.color : '',
 			user: editing ? order.user.name : $user?.name,
 			dateOrdered: editing ? order.dateOrdered : '',
@@ -96,10 +81,13 @@
 				});
 
 				if (response.ok) {
-					goto('/orders');
-					console.log('Order added successfully.');
+					if (!editing) {
+						goto('/orders');
+					}
+					notificationSuccessToast('Order saved successfully');
 				} else {
 					console.log('Something went wrong.');
+					notificationFailedToast('Something went wrong');
 				}
 			} catch (error) {
 				console.error(error);
@@ -130,7 +118,7 @@
 	use:form
 >
 	<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-		<div class="col-span-2">
+		<div class="">
 			<Label for="status" class="sr-only">Status</Label>
 			<Select
 				bind:value={$data.status}
@@ -139,6 +127,20 @@
 				class="mb-2 {$data.status === 'complete' ? 'text-green-600' : ''}"
 				items={statuses}
 				placeholder="Select a status"
+			/>
+			{#if $errors.status}
+				<Helper color="red" class="mt-2">{$errors.status}</Helper>
+			{/if}
+		</div>
+		<div class="">
+			<Label for="status" class="sr-only">Type</Label>
+			<Select
+				bind:value={$data.type}
+				id="type"
+				underline
+				class="mb-2 {$data.status === 'complete' ? 'text-green-600' : ''}"
+				items={types}
+				placeholder="Select the type of print"
 			/>
 			{#if $errors.status}
 				<Helper color="red" class="mt-2">{$errors.status}</Helper>
@@ -164,6 +166,7 @@
 		</div>
 		<FloatingLabelInput style="filled" id="user" name="user" type="text" label="Staff" disabled />
 		<div class="col-span-2 flex items-center gap-2">
+			<Label for="patron" class="sr-only">Patron</Label>
 			<SvelteSelect
 				bind:value={patron}
 				loadOptions={getPatron}
@@ -181,8 +184,8 @@
 				</div>
 			</SvelteSelect>
 			<PatronForm bind:show={newPatronShow} />
-			<button on:click={() => (newPatronShow = true)} class=""
-				><span class="block h-6 w-6 text-green-500"><Plus /></span></button
+			<button type="button" on:click={() => (newPatronShow = true)} class=""
+				><span class="block h-6 w-6 text-green-500"><PlusCircle /></span></button
 			>
 		</div>
 		<div class="">
@@ -269,9 +272,14 @@
 			</div>
 		{/each}
 	</section>
-	<Button loading={$isSubmitting} disabled={!isValid || $isSubmitting} type="submit"
-		>{editing ? 'Save Changes' : 'Submit'}</Button
-	>
+	<div class="flex items-center justify-between">
+		<Button loading={$isSubmitting} disabled={!$isValid || $isSubmitting} type="submit"
+			>{editing ? 'Save Changes' : 'Submit'}</Button
+		>
+		{#if editing && $user?.isAdmin === true}
+			<DeleteOrder {order} />
+		{/if}
+	</div>
 </form>
 
 <style lang="postcss" global>

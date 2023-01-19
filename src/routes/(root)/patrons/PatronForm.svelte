@@ -64,13 +64,7 @@
 </script>
 
 <Modal title="Add a New Patron" bind:open={show}>
-	<form
-		action="/patrons"
-		method="post"
-		class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
-		use:form
-		use:enhance
-	>
+	<form class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" use:form>
 		<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
 			<div>
 				<FloatingLabelInput id="firstName" name="firstName" type="text" label="First Name" />

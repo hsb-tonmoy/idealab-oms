@@ -1,9 +1,7 @@
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '$lib/server/prisma';
 
 export const POST = (async ({ request }) => {
 	const requestData = await request.json();
@@ -39,12 +37,21 @@ export const PATCH = (async ({ request }) => {
 			data: requestData
 		});
 
-		// Loop through the files and update if the file has an id, otherwise create a new file
-
-		console.log(fileData);
+		// Loop through the files and delete the file if it has a delete flag, update if the file has an id, otherwise create a new file
 
 		for (const file of fileData) {
-			if (file.id) {
+			if (file.delete) {
+				await prisma.file.delete({
+					where: {
+						id: file.id
+					}
+				});
+				// Delete the file from array
+				break;
+			} else if (file.id) {
+				if (file.delete) {
+					delete file.delete;
+				}
 				await prisma.file.update({
 					where: {
 						id: file.id
@@ -55,33 +62,34 @@ export const PATCH = (async ({ request }) => {
 				await prisma.file.create({
 					data: {
 						...file,
-						order: {
-							connect: {
-								id: id
-							}
-						}
+						orderId: id
 					}
 				});
 			}
 		}
 
-		// Delete file if the file has a delete flag
-
-		for (const file of fileData) {
-			if (file.delete) {
-				await prisma.file.delete({
-					where: {
-						id: file.id
-					}
-				});
-			}
-		}
-
-		if (order) {
-			return json({ success: true });
-		}
+		return json({ success: true });
 	} catch (err) {
 		console.log(err);
 	}
 	throw error(400, 'Order update failed');
+}) satisfies RequestHandler;
+
+export const DELETE = (async ({ request }) => {
+	const requestData = await request.json();
+
+	const { id } = requestData;
+
+	try {
+		const order = await prisma.order.delete({
+			where: {
+				id: id
+			}
+		});
+
+		return json({ success: true });
+	} catch (err) {
+		console.log(err);
+	}
+	throw error(400, 'Order deletion failed');
 }) satisfies RequestHandler;

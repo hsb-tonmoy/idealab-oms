@@ -3,6 +3,8 @@
 	import { convertStatus } from '$lib/utils/convertStatus';
 	import { goto } from '$app/navigation';
 
+	import { types } from '../constants';
+
 	export let data;
 
 	let orders = data.orders;
@@ -22,6 +24,8 @@
 						>
 							<th class="px-4 py-3">Patron</th>
 							<th class="px-4 py-3">Order Name</th>
+							<th class="px-4 py-3">Type</th>
+							<th class="px-4 py-3">Color</th>
 							<th class="px-4 py-3">Date Ordered</th>
 							<th class="px-4 py-3">Staff</th>
 							<th class="px-4 py-3">Status</th>
@@ -52,6 +56,8 @@
 									</div>
 								</td>
 								<td class="px-4 py-3 text-sm"> {order.name} </td>
+								<td class="px-4 py-3 text-sm"> {order.type} </td>
+								<td class="px-4 py-3 text-sm"> {order.color} </td>
 								<td class="px-4 py-3 text-xs">
 									{convertDate(order.dateOrdered, true, false)}
 								</td>

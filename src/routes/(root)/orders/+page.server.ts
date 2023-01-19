@@ -1,13 +1,18 @@
-import { PrismaClient } from '@prisma/client';
 import type { PageServerLoad } from './$types';
 
-const prisma = new PrismaClient();
+import { prisma } from '$lib/server/prisma';
 
 export const load: PageServerLoad = async () => {
 	const orders = await prisma.order.findMany({
 		include: {
 			user: true,
 			patron: true
+		},
+		where: {
+			deleted: false
+		},
+		orderBy: {
+			dateOrdered: 'desc'
 		}
 	});
 

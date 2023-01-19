@@ -51,12 +51,12 @@
 	<div class="flex flex-col mt-6">
 		<h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">Recent Orders</h4>
 		{#each patron.orders as order}
-			<div class="flex flex-col gap-2">
+			<div class="flex flex-col gap-2 ml-4">
 				<a class="flex items-center gap-2" href={`/orders/${order.id}/`}>
 					<span class="font-semibold text-sm md:text-base">{order.name}</span>
 					<span class="">-</span>
 					<span class="text-xs md:text-sm text-gray-500 dark:text-gray-400"
-						>{convertDate(order.dateOrdered)}</span
+						>{convertDate(order.dateOrdered, true, false)}</span
 					>
 					{@html convertStatus(order.status, true)}
 				</a>

@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-import type { PageServerLoad } from './$types';
+import { prisma } from '$lib/server/prisma';
 
-const prisma = new PrismaClient();
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const id = params.id;
