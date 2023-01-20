@@ -49,6 +49,7 @@
 			dateOrdered: editing ? order.dateOrdered : '',
 			patron: editing ? order.patron.name : patron,
 			status: editing ? order.status : 'new',
+			notes: editing ? order.notes : '',
 			patronContacted: editing ? order.patronContacted : false,
 			patronPickedUp: editing ? order.patronPickedUp : false,
 			files: editing ? order.files : file
@@ -138,7 +139,7 @@
 				bind:value={$data.type}
 				id="type"
 				underline
-				class="mb-2 {$data.status === 'complete' ? 'text-green-600' : ''}"
+				class="mb-2"
 				items={types}
 				placeholder="Select the type of print"
 			/>
@@ -212,6 +213,9 @@
 				<Helper color="red" class="mt-2">{$errors.color}</Helper>
 			{/if}
 		</div>
+		<div class="col-span-2">
+			<Textarea id="notes" name="notes" placeholder="Notes on the order" rows="4" />
+		</div>
 	</section>
 	<h6 class="mb-4 text-base font-semibold text-gray-600 dark:text-gray-300 mt-6">Files</h6>
 	<section class="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -250,7 +254,7 @@
 						bind:value={$data.files[i].status}
 						id={'filestatus' + i}
 						underline
-						class="mb-2 {$data.status === 'complete' ? 'text-green-600' : ''}"
+						class="mb-2"
 						items={file_statuses}
 						placeholder="Select a status"
 					/>

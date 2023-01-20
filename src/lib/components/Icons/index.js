@@ -6,3 +6,4 @@ export { default as PlusCircle } from './PlusCircle.svelte';
 export { default as Minus } from './Minus.svelte';
 export { default as LeftArrow } from './LeftArrow.svelte';
 export { default as Trash } from './Trash.svelte';
+export { default as Users } from './Users.svelte';

@@ -1,29 +1,23 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import type { PageData } from './$types';
-
-	const addNew = $page.url.searchParams.get('addNew');
 
 	export let data: PageData;
 
-	import PatronForm from './PatronForm.svelte';
 	import { goto } from '$app/navigation';
 
-	let newPatronShow = addNew ? true : false;
+	function returnRole(role: boolean) {
+		if (role) {
+			return 'Yes';
+		} else {
+			return 'No';
+		}
+	}
 </script>
 
 <main class="h-full pb-16 overflow-y-auto">
 	<div class="container grid px-6 mx-auto">
 		<div class="flex justify-between items-center">
-			<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">Patrons</h2>
-			<button
-				on:click={() => (newPatronShow = true)}
-				class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-			>
-				Add a Patron
-				<span class="ml-2" aria-hidden="true">+</span>
-			</button>
-			<PatronForm bind:show={newPatronShow} />
+			<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">Users</h2>
 		</div>
 
 		<div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
@@ -34,14 +28,16 @@
 							class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
 						>
 							<th class="px-4 py-3">Name</th>
-							<th class="px-4 py-3">Contact</th>
-							<th class="px-4 py-3">Lead</th>
+							<th class="px-4 py-3">Email</th>
+							<th class="px-4 py-3">Position</th>
+							<th class="px-4 py-3">Admin</th>
+							<th class="px-4 py-3">SuperAdmin</th>
 						</tr>
 					</thead>
 					<tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-						{#each data.patrons as patron}
+						{#each data.users as user}
 							<tr
-								on:click={() => goto(`/patrons/${patron.id}`)}
+								on:click={() => goto(`/patrons/${user.id}`)}
 								class="text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
 							>
 								<td class="px-4 py-3">
@@ -49,21 +45,21 @@
 										<div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
 											<img
 												class="object-cover w-full h-full rounded-full"
-												src={`https://ui-avatars.com/api/?name=${
-													patron.firstName + '' + patron.lastName
-												}&format=svg&rounded=true&bold=true`}
+												src={`https://ui-avatars.com/api/?name=${user.name}&format=svg&rounded=true&bold=true`}
 												alt=""
 												loading="lazy"
 											/>
 											<div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true" />
 										</div>
 										<div>
-											<p class="font-semibold">{`${patron.firstName} ${patron.lastName}`}</p>
+											<p class="font-semibold">{`${user.name}`}</p>
 										</div>
 									</div>
 								</td>
-								<td class="px-4 py-3 text-sm"> {patron.email || patron.phone} </td>
-								<td class="px-4 py-3 text-sm"> {patron.lead} </td>
+								<td class="px-4 py-3 text-sm"> {user.email} </td>
+								<td class="px-4 py-3 text-sm"> {user.position} </td>
+								<td class="px-4 py-3 text-sm"> {returnRole(user.isAdmin)} </td>
+								<td class="px-4 py-3 text-sm"> {returnRole(user.isSuperAdmin)} </td>
 							</tr>
 						{/each}
 					</tbody>

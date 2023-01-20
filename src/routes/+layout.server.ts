@@ -1,4 +1,4 @@
 import { handleServerSession } from '@lucia-auth/sveltekit';
-import type { LayoutServerLoad } from './$types';
+import type { LayoutServerLoadEvent } from './$types';
 
-export const load: LayoutServerLoad = handleServerSession();
+export const load = handleServerSession();

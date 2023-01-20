@@ -1,17 +1,23 @@
 <script>
 	import { page } from '$app/stores';
-	import { Orders, Home, Customers } from '$lib/components/Icons';
+	import { Orders, Home, Customers, Users } from '$lib/components/Icons';
 
-	export const items = [
+	const items = [
 		{ name: 'Dashboard', href: '/', icon: Home },
 		{ name: 'Orders', href: '/orders', icon: Orders },
-		{ name: 'Patrons', href: '/patrons', icon: Customers }
+		{ name: 'Patrons', href: '/patrons', icon: Customers },
+		{ name: 'Users', href: '/users', icon: Users }
 	];
+
+	export let user;
 </script>
 
 <ul>
 	{#each items as item}
-		<li class="relative px-6 py-3">
+		<li
+			class:hidden={item.name === 'Users' && user.isSuperAdmin === false}
+			class="relative px-6 py-3"
+		>
 			<a
 				class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 {$page
 					.url.pathname === item.href
