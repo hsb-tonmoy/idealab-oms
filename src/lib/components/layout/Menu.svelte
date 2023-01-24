@@ -14,23 +14,23 @@
 
 <ul>
 	{#each items as item}
-		<li
-			class:hidden={item.name === 'Users' && user.isSuperAdmin === false}
-			class="relative px-6 py-3"
-		>
-			<a
-				class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 {$page
-					.url.pathname === item.href
-					? 'text-gray-800 dark:text-gray-200'
-					: ''}"
-				href={item.href}
-			>
-				<span class="block w-5 h-5">
-					<svelte:component this={item.icon} />
-				</span>
-				<span class="ml-4">{item.name}</span>
-			</a>
-		</li>
+		<!-- Hide Users item if the user is not a Superadmin -->
+		{#if !(!$user?.isSuperAdmin && item.name === 'Users')}
+			<li class="relative px-6 py-3">
+				<a
+					class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 {$page
+						.url.pathname === item.href
+						? 'text-gray-800 dark:text-gray-200'
+						: ''}"
+					href={item.href}
+				>
+					<span class="block w-5 h-5">
+						<svelte:component this={item.icon} />
+					</span>
+					<span class="ml-4">{item.name}</span>
+				</a>
+			</li>
+		{/if}
 	{/each}
 </ul>
 <div class="px-6 my-6">

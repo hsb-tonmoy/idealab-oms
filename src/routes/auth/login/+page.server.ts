@@ -1,11 +1,10 @@
-import { invalid, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { auth } from '$lib/server/lucia';
 import type { PageServerLoad, Actions } from './$types';
-import { goto, invalidate, invalidateAll } from '$app/navigation';
 
 // If the user exists, redirect authenticated users to the profile page.
 export const load: PageServerLoad = async ({ locals }) => {
-	const session = await locals.getSession();
+	const session = await locals.validate();
 	if (session) throw redirect(302, '/');
 };
 
@@ -16,7 +15,7 @@ export const actions: Actions = {
 		const password = form.get('password');
 		// check for empty values
 		if (!email || !password || typeof email !== 'string' || typeof password !== 'string')
-			return invalid(400);
+			return fail(400);
 		try {
 			const user = await auth.authenticateUser('email', email, password);
 			const session = await auth.createSession(user.userId);
@@ -25,7 +24,7 @@ export const actions: Actions = {
 			return { success: true };
 		} catch {
 			// invalid credentials
-			return invalid(400);
+			return fail(400);
 		}
 	}
 };

@@ -5,11 +5,10 @@ export const statuses = [
 ];
 
 export const types = [
-	{ value: 'plastic', name: 'Plastic Print' },
+	{ value: 'pla', name: 'PLA Print' },
 	{ value: 'resin', name: 'Resin Print' },
 	{ value: 'laser-engraving', name: 'Laser Engraving' },
-	{ value: 'wood-carving', name: 'Wood Carving' },
-	{ value: 'cricut', name: 'Cricut' }
+	{ value: 'wood-carving', name: 'Wood Carving' }
 ];
 
 export const file_statuses = [

@@ -11,7 +11,7 @@
 	YupPassword(yup);
 
 	const schema = yup.object().shape({
-		name: yup.string().required(),
+		name: yup.string().required('Name is required'),
 		email: yup
 			.string()
 			.email('Please enter a valid email address')

@@ -37,7 +37,7 @@
 					<tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
 						{#each data.users as user}
 							<tr
-								on:click={() => goto(`/patrons/${user.id}`)}
+								on:click={() => goto(`/users/${user.id}`)}
 								class="text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
 							>
 								<td class="px-4 py-3">
