@@ -13,7 +13,13 @@
 	export let currentPage = 1;
 	export let pageSize = 25;
 
-	export const paginatedData = paginate({ items: items, pageSize, currentPage });
+	export let paginatedData: any[] = [];
+
+	$: paginatedItems = paginate({ items: items, pageSize, currentPage });
+
+	$: {
+		paginatedData = paginatedItems;
+	}
 </script>
 
 <div
@@ -53,3 +59,17 @@
 		</PaginationNav>
 	</div>
 </div>
+
+<style lang="postcss" global>
+	.pagination :global(.pagination-nav) {
+		@apply flex justify-end items-center text-xs font-semibold tracking-wide;
+	}
+
+	.pagination :global(.option) {
+		@apply px-3 py-1 rounded-md rounded-l-lg cursor-pointer;
+	}
+
+	.pagination :global(.option.active) {
+		@apply px-3 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none;
+	}
+</style>
