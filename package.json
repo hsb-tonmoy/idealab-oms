@@ -33,6 +33,7 @@
 		"svelte": "^3.44.0",
 		"svelte-check": "^2.7.1",
 		"svelte-loading-spinners": "^0.3.4",
+		"svelte-paginate": "^0.1.0",
 		"svelte-preprocess": "^4.10.7",
 		"tailwindcss": "^3.1.5",
 		"tslib": "^2.3.1",
