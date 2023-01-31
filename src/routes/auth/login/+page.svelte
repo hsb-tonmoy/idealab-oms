@@ -3,12 +3,15 @@
 	import LoginForm from './LoginForm.svelte';
 
 	import type { ActionData } from './$types';
+	import { notificationFailedToast } from '$lib/utils/notificationToast';
 
 	export let form: ActionData;
 
 	$: if (form?.success) {
 		invalidateAll();
 		goto('/');
+	} else if (form?.fail) {
+		notificationFailedToast('Email/Password is incorrect. Please try again.');
 	}
 </script>
 

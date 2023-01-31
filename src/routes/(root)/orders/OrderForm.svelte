@@ -1,8 +1,10 @@
-<script>
+<script lang="ts">
 	import { validator } from '@felte/validator-yup';
 	import { createForm } from 'felte';
 	import * as yup from 'yup';
 	import SvelteSelect from 'svelte-select';
+	import { shortcut, type ShortcutEventDetails } from '@svelte-put/shortcut';
+
 	import getPatron from './getPatron';
 
 	import { FloatingLabelInput, Toggle, Helper, Label, Select, Textarea } from 'flowbite-svelte';
@@ -111,12 +113,24 @@
 		}
 		$data.files = $data.files.filter((_, i) => i !== index);
 	}
+
+	function handleSave(detail: ShortcutEventDetails) {
+		manualSubmit();
+	}
 </script>
 
 <form
 	on:submit={manualSubmit}
 	class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
 	use:form
+	use:shortcut={{
+		trigger: {
+			key: 's',
+			modifier: ['ctrl'],
+			callback: handleSave,
+			preventDefault: true
+		}
+	}}
 >
 	<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
 		<div class="">

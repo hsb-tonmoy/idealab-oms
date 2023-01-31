@@ -1,6 +1,7 @@
 <script>
 	import { convertDate } from '$lib/utils/convertDate';
 	import { convertStatus } from '$lib/utils/convertStatus';
+	import { convertPrintType } from '$lib/utils/convertPrintType';
 	import { goto } from '$app/navigation';
 	import Pagination from '$lib/components/Pagination.svelte';
 
@@ -57,7 +58,7 @@
 									</div>
 								</td>
 								<td class="px-4 py-3 text-sm"> {order.name} </td>
-								<td class="px-4 py-3 text-sm"> {order.type} </td>
+								<td class="px-4 py-3 text-sm"> {convertPrintType(order.type)} </td>
 								<td class="px-4 py-3 text-sm"> {order.color} </td>
 								<td class="px-4 py-3 text-xs">
 									{convertDate(order.dateOrdered, true, false)}
@@ -65,7 +66,7 @@
 								<td class="px-4 py-3 text-xs">
 									<div>
 										<p class="font-semibold">{order.user.name}</p>
-										<p class="text-xs text-gray-600 dark:text-gray-400">{'Intern'}</p>
+										<p class="text-xs text-gray-600 dark:text-gray-400">{order.user.position}</p>
 									</div>
 								</td>
 								<td class="px-4 py-3 text-sm">

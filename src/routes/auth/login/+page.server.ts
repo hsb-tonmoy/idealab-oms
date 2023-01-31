@@ -1,5 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { auth } from '$lib/server/lucia';
+import { LuciaError } from 'lucia-auth';
 import type { PageServerLoad, Actions } from './$types';
 
 // If the user exists, redirect authenticated users to the profile page.
@@ -22,9 +23,11 @@ export const actions: Actions = {
 			locals.setSession(session);
 
 			return { success: true };
-		} catch {
-			// invalid credentials
-			return fail(400);
+		} catch (e) {
+			if (e instanceof LuciaError) {
+				const message = e.message;
+				return { fail: true, message };
+			}
 		}
 	}
 };
