@@ -15,8 +15,17 @@
 <main class="h-full pb-16 overflow-y-auto">
 	<div class="container grid px-6 mx-auto">
 		<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">Orders</h2>
-
-		<h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">Latest Orders</h4>
+		<div class="flex items-center justify-between mb-4">
+			<h4 class="text-lg font-semibold text-gray-600 dark:text-gray-300">Latest Orders</h4>
+			<a href="/orders/add">
+				<button
+					class="flex items-center justify-between w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-primary border border-transparent rounded-lg active:bg-primary hover:bg-primaryDarker focus:outline-none focus:shadow-outline-purple"
+				>
+					New Order
+					<span class="ml-2" aria-hidden="true">+</span>
+				</button>
+			</a>
+		</div>
 		<div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
 			<div class="w-full overflow-x-auto">
 				<table class="w-full whitespace-no-wrap">

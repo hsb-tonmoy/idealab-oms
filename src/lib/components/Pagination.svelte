@@ -70,6 +70,6 @@
 	}
 
 	.pagination :global(.option.active) {
-		@apply px-3 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none;
+		@apply px-3 py-1 text-white transition-colors duration-150 bg-primary border border-r-0 border-primary rounded-md focus:outline-none;
 	}
 </style>
